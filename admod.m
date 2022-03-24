@@ -2,33 +2,33 @@ clc;
 clear;
 close all;
 
-N = 1e7;
+N = 1e6;
 b = randi([0 1], N, 1);
 
-SnR = 1:0.25:30;
+SnR = [8:0.05:30 30:0.01:40];
 E = zeros(1, length(SnR));
 
 for i=1:length(SnR)
     
-    if SnR(i) <= 11
+    if SnR(i) <= 13
         ybpsk = pskmod(b, 2);
         rnbpsk = awgn(ybpsk, SnR(i), 'measured');
         dbpsk = pskdemod(real(rnbpsk), 2);
         E(i) = (length(find(b~=dbpsk))/N);
 
-    elseif SnR(i) <= 18
+    elseif SnR(i) > 13 && SnR(i) <= 22
         yqpsk = pskmod(b, 4);
         rnqpsk = awgn(yqpsk, SnR(i), 'measured');
         dqpsk = pskdemod(rnqpsk, 4);
         E(i) = (length(find(b~=dqpsk))/N);
 
-    elseif SnR(i) <= 24
+    elseif SnR(i) > 22 && SnR(i) <= 30
         y16q = qammod(b, 16);
         rn16q = awgn(y16q, SnR(i), 'measured');
         d16q = qamdemod(rn16q, 16);
         E(i) = (length(find(b~=d16q))/N);
         
-    else
+    elseif SnR(i) > 30
         y64q = qammod(b, 64);
         rn64q = awgn(y64q, SnR(i), 'measured');
         d64q = qamdemod(rn64q, 64);
@@ -38,6 +38,6 @@ for i=1:length(SnR)
 
 end
 
-semilogy(10*log10(SnR/2), E, 'r.'); grid on;
+semilogy(SnR, E, 'r.'); grid on;
 
     

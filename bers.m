@@ -10,7 +10,7 @@ yqpsk = pskmod(b, 4);
 y16q = qammod(b, 16);
 y64q = qammod(b, 64);
 
-SnR = 1:0.5:30;
+SnR = 1:0.05:30;
 Ebpsk = zeros(1, length(SnR));
 Eqpsk = zeros(1, length(SnR));
 E16q = zeros(1, length(SnR));
