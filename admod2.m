@@ -1,13 +1,15 @@
 clc;
-clear all;
+clear;
 close all;
 
+%% Reading Ranges
 fileID = fopen('Ranges.dat','r');
 a = fread(fileID,'double');
 fclose(fileID);
 
 bound = 40;
 
+%% Declarations
 errorRate = comm.ErrorRate;
 channel = comm.AWGNChannel('NoiseMethod','Signal to noise ratio (SNR)');
 bpskmod = comm.PSKModulator(2,0,'BitInput',true);
@@ -17,13 +19,14 @@ qpskdemod = comm.PSKDemodulator(4,0,'BitOutput',true);
 
 SNR=10:1:40;
 err=zeros(size(SNR));
+
 for i=1:length(SNR)
     
     channel.SNR = SNR(i);
 
     if(a(1)<=SNR(i)<a(2))
         
-        %BPSK
+        % BPSK
         M = 2;
         bs = log2(M);
         x = randi([0 1],bs*1000,1);
@@ -33,7 +36,7 @@ for i=1:length(SNR)
                
     elseif(a(2)<=SNR(i)<a(3))
         
-        %QPSK
+        % QPSK
         M = 4;
         bs = log2(M);
         x = randi([0 1],bs*1000,1);
@@ -43,7 +46,7 @@ for i=1:length(SNR)
     
     elseif(a(3)<=SNR(i)<a(4))
         
-        %16-QAM
+        % 16-QAM
         M = 16;
         bs = log2(M);
         x = randi([0 1],bs*1000,1);
@@ -53,7 +56,7 @@ for i=1:length(SNR)
     
     elseif(a(4)<=SNR(i)<=bound)
         
-        %64-QAM
+        % 64-QAM
         M = 64;
         bs = log2(M);
         x = randi([0 1],bs*1000,1);

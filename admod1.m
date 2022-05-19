@@ -1,25 +1,28 @@
 clc;
-clear all;
+clear;
+close all;
 
-
+%% Input
 SNR = 1:1:40;
 ber_bpsk = [];
 ber_qpsk = [];
 ber_16qam = [];
 ber_64qam = [];
 
+%% Declarations
 errorRate = comm.ErrorRate;
 channel = comm.AWGNChannel('NoiseMethod','Signal to noise ratio (SNR)');
 bpskmod = comm.PSKModulator(2,0,'BitInput',true);
 bpskdemod = comm.PSKDemodulator(2,0,'BitOutput',true);
 qpskmod = comm.PSKModulator(4,0,'BitInput',true);
 qpskdemod = comm.PSKDemodulator(4,0,'BitOutput',true);
-
+ 
+%% Modulation
 for snr=1:length(SNR)
     
     channel.SNR = SNR(snr);
     
-    %bpsk
+    % BPSK
     reset(errorRate);
     M = 2;
     bs = log2(M);
@@ -33,11 +36,8 @@ for snr=1:length(SNR)
     else
         ber_bpsk(snr) = r(1);
     end
-
     
-        
-    
-    %qpsk
+    % QPSK
     reset(errorRate);
     r = [0 0 0];
     M = 4;
@@ -53,7 +53,7 @@ for snr=1:length(SNR)
         ber_qpsk(snr) = r(1);
     end
 
-    %16-QAM
+    % 16-QAM
     reset(errorRate);
     r = [0 0 0];
     M = 16;
@@ -69,7 +69,7 @@ for snr=1:length(SNR)
         ber_16qam(snr) = r(1);
     end
 
-    %64-QAM
+    % 64-QAM
     reset(errorRate);
     r = [0 0 0];
     M = 64;
@@ -85,19 +85,18 @@ for snr=1:length(SNR)
         ber_64qam(snr) = r(1);
     end
     
-   
 end
 
-%plots
+%% Plotting
 figure();
 semilogy(SNR,ber_bpsk,'r',SNR,ber_qpsk,'b',SNR,ber_16qam,'g',SNR,ber_64qam,'y');
 legend('BPSK','QPSK','16-QAM','64-QAM');
 title('Bit Error Rate Comparison');
-xlabel('SNR(dB)');ylabel('BER');
+xlabel('SNR(dB)'); ylabel('BER');
 axis([0 45 1e-7 10]);
 grid;
 
-%finding ranges
+%% Finding ranges
 bpsk_start = find(ber_bpsk==1e-7);
 qpsk_start = find(ber_qpsk==1e-7);
 qam16_start = find(ber_16qam==1e-7);
